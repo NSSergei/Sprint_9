@@ -1,31 +1,27 @@
 package Server;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class FilmsCollections {
-    private Map<Integer, Map<Integer,String>> films = new HashMap<>();
+    private ArrayList<Movie> films = new ArrayList<>();
 
-    public void addFilm(Integer year, Integer id, String name) {
-        if(!films.containsKey(year)){
-            films.put(year,new HashMap<Integer,String>());
-        }
-        films.get(year).put(id,name);
-    }
+    public ArrayList<Movie>  fullSampleData() {
+        int id;
+        films.add(new Movie(1,"Пятый элемент",1997));
+        films.add(new Movie(2,"Люди в чёрном",1997));
+        films.add(new Movie(3,"Игра",1997));
+        //films.add(new Movie("Игра",1997));
 
-    public Map<Integer, Map<Integer,String>> fullSampleData() {
-        addFilm(1997, 1,"Пятый элемент");
-        addFilm(1997, 2,"Люди в чёрном");
-        addFilm(1997, 3,"Игра");
-
-        addFilm(2024, 1,"BBC Cолнце");
-        addFilm(2024, 2,"BBC Африка");
-        addFilm(2024, 3,"Игра в Лаву");
+        films.add(new Movie(4,"BBC Cолнце", 2024));
+        films.add(new Movie(5,"BBC Африка", 2024));
+        films.add(new Movie(6,"Игра в Тумане", 2024));
         return films;
     }
 
-    public Map<Integer, Map<Integer,String>> emptyFilmsList() {
-        return null;
+    public ArrayList<Movie>  emptyFilmsList() {
+        return new ArrayList<>();
     }
 }
 

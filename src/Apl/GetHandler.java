@@ -1,19 +1,22 @@
 package Apl;
 
+import Server.Movie;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import com.google.gson.Gson;
 
 public class GetHandler implements HttpHandler {
-    private Map<Integer,Map<Integer,String>>  films;
+    private List<Movie> films;
 
-    public GetHandler(Map<Integer,Map<Integer,String>> films) {
+    public GetHandler(List<Movie> films) {
         this.films = films;
     }
 

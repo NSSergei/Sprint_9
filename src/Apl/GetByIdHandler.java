@@ -1,11 +1,13 @@
 package Apl;
 
+import Server.Movie;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gson.Gson;
 
@@ -13,47 +15,44 @@ import com.google.gson.Gson;
 
 
 public class GetByIdHandler implements HttpHandler {
-    private Map<Integer, Map<Integer,String>> films;
+    private List<Movie> films;
 
-    public GetByIdHandler(Map<Integer,Map<Integer,String>> films) {
+    public GetByIdHandler(List<Movie> films) {
         this.films = films;
     }
 
     @Override
     public void handle(HttpExchange ex) throws IOException{
+
+        if(!ex.getRequestMethod().equalsIgnoreCase("GET")){
+            ex.sendResponseHeaders(405,-1);
+            String jsonResponse = "Ошибка метода";
+            try(OutputStream os = ex.getResponseBody()){
+                os.write(jsonResponse.getBytes());
+            }
+            return;
+        }
         Gson gson = new Gson();
         ex.getResponseHeaders().set("Content-Type", "application/json; charset=UTF-8");
         String path = ex.getRequestURI().getPath();
-
         String[] parts = path.split("/");
-        Integer year;
-        Integer id;
 
-        if(parts.length < 4){
+        if(parts.length != 3 || !parts[1].equals("movies")){
             ex.sendResponseHeaders(400,0);
 
-            String jsonResponse = gson.toJson("год или id промущен формат : get/year/id");
+            String jsonResponse = gson.toJson("id промущен формат : get/{id}");
             try(OutputStream os = ex.getResponseBody()){
                 os.write(jsonResponse .getBytes());
             }
             return;
         }
 
+        String index = parts[2];
+        Integer id ;
+
 
         try {
-            year = Integer.valueOf(parts[2]);
-        } catch (NumberFormatException e){
-            ex.sendResponseHeaders(400,0);
-
-            String jsomResponse = gson.toJson("Ошибка типа данных года");
-            try(OutputStream os = ex.getResponseBody()){
-                os.write(jsomResponse.getBytes());
-            }
-            return;
-        }
-
-        try {
-            id = Integer.valueOf(parts[3]);
+            id = Integer.valueOf(index);
         } catch (NumberFormatException e) {
             ex.sendResponseHeaders(400,0);
 
@@ -64,23 +63,29 @@ public class GetByIdHandler implements HttpHandler {
             return;
         }
 
-        if(!films.containsKey(year) || !films.get(year).containsKey(id)){
-            ex.sendResponseHeaders(404,0);
-
-            String jsonResponse = gson.toJson("фильм с данным ID не найден / заданный год отсутствует");
-            try(OutputStream os = ex.getResponseBody()){
-                os.write(jsonResponse .getBytes());
+        if (id < 1 || id >= films.size()) {
+            ex.sendResponseHeaders(404, 0);
+            String jsonResponse = gson.toJson("Фильм с данным ID не найден");
+            try (OutputStream os = ex.getResponseBody()) {
+                os.write(jsonResponse.getBytes());
             }
             return;
         }
 
-        String name = films.get(year).get(id);
-
         ex.sendResponseHeaders(200,0);
+        Movie filmsId = null;
 
-        String jsonResponse = gson.toJson("Фильм по введенному id " + id + " называется: " + name);
+        for(Movie film : films){
+            if(film.getId() == id){
+                filmsId = film;
+            }
+        }
+
+        String jsonResponse = gson.toJson(filmsId);
+
         try(OutputStream os = ex.getResponseBody()){
             os.write(jsonResponse.getBytes());
+
         }
     }
 }

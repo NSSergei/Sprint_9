@@ -1,4 +1,4 @@
-package Server;
+package server;
 
 public class Movie {
     private String title;
@@ -33,6 +33,13 @@ public class Movie {
 
     public void setId(int id) {
         this.id= id;
+    }
+
+    @Override
+    public String toString(){
+        return "id " + id +
+                " title " + title +
+                " year " + year;
     }
 
 }

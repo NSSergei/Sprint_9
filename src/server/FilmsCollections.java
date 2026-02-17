@@ -1,4 +1,4 @@
-package Server;
+package server;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,6 +24,3 @@ public class FilmsCollections {
         return new ArrayList<>();
     }
 }
-
-
-

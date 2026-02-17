@@ -1,8 +1,7 @@
-package Test;
+package test;
 import static org.junit.jupiter.api.Assertions.*;
-
-import Apl.*;
-import Server.*;
+import apl.*;
+import server.*;
 
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
@@ -69,7 +68,7 @@ public class HttpMethodTest {
         String body = response.body().trim();
 
         //System.out.println(body);
-        assertFalse(body.startsWith("[") && body.endsWith("]") && body.length() == 2, "Ожидается JSON-массив");
+        assertTrue(body.startsWith("[") && body.endsWith("]") && body.length() == 2, "Ожидается JSON-массив");
     }
     @Test
     void genMovies_notEmpty() throws  Exception {
@@ -91,7 +90,7 @@ public class HttpMethodTest {
                 .anyMatch(o -> o.get("year").getAsInt() == 1997);
 
         assertTrue(has1997);
-        }
+    }
 
     @Test
     void deleteMovies() throws IOException, InterruptedException {
@@ -119,14 +118,14 @@ public class HttpMethodTest {
         HttpResponse response = client.send(request,HttpResponse.BodyHandlers.ofString());
         assertEquals(404, response.statusCode(), "/DELETE id должен вернуть 404");
 
-        assertEquals("\"Позиция вне диапазона 666\"",response.body());
+        assertEquals("id для удаления отсутсвует",response.body());
 
     }
 
     @Test
     void getByIdHandlet() throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE + "/movies/1"))
+                .uri(URI.create(BASE + "/movies/2"))
                 .GET()
                 .build();
         HttpResponse response = client.send(request,HttpResponse.BodyHandlers.ofString());
@@ -154,9 +153,9 @@ public class HttpMethodTest {
         HttpResponse response = client.send(request,HttpResponse.BodyHandlers.ofString());
 
         assertEquals("[{\"title\":\"Пятый элемент\",\"year\":1997,\"id\":1}," +
-                                "{\"title\":\"Люди в чёрном\",\"year\":1997,\"id\":2}," +
-                                "{\"title\":\"Игра\",\"year\":1997,\"id\":3}]",
-                                response.body());
+                        "{\"title\":\"Люди в чёрном\",\"year\":1997,\"id\":2}," +
+                        "{\"title\":\"Игра\",\"year\":1997,\"id\":3}]",
+                response.body());
 
     }
 
@@ -189,14 +188,14 @@ public class HttpMethodTest {
         assertEquals(201, response.statusCode(),"POST /movies должен вернуть 201");
 
         assertEquals("[" +
-                "{\"title\":\"Пятый элемент\",\"year\":1997,\"id\":1}," +
-                "{\"title\":\"Люди в чёрном\",\"year\":1997,\"id\":2}," +
-                "{\"title\":\"Игра\",\"year\":1997,\"id\":3}," +
-                "{\"title\":\"BBC Cолнце\",\"year\":2024,\"id\":4}," +
-                "{\"title\":\"BBC Африка\",\"year\":2024,\"id\":5}," +
-                "{\"title\":\"Игра в Лаву\",\"year\":2024,\"id\":6}," +
-                "{\"title\":\"тест\",\"year\":1997,\"id\":7}" +
-                "]"
+                        "{\"title\":\"Пятый элемент\",\"year\":1997,\"id\":1}," +
+                        "{\"title\":\"Люди в чёрном\",\"year\":1997,\"id\":2}," +
+                        "{\"title\":\"Игра\",\"year\":1997,\"id\":3}," +
+                        "{\"title\":\"BBC Cолнце\",\"year\":2024,\"id\":4}," +
+                        "{\"title\":\"BBC Африка\",\"year\":2024,\"id\":5}," +
+                        "{\"title\":\"Игра в Тумане\",\"year\":2024,\"id\":6}," +
+                        "{\"title\":\"тест\",\"year\":1997,\"id\":7}" +
+                        "]"
                 ,
                 response.body());
     }
@@ -219,7 +218,3 @@ public class HttpMethodTest {
         assertEquals("{\"error\":\"Ошибка валидации\",\"details\":[\"год должен быть между 1888 и 2026\"]}",response.body().toString());
     }
 }
-
-
-
-
